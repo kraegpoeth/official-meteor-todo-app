@@ -1,13 +1,16 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
 import { Tasks } from '../api/tasks.js';
 
+import './task.js'
 import './body.html';
-import './task.html'
+
 
 Template.body.onCreated(function bodyOnCreated() {
   this.state = new ReactiveDict();
+  Meteor.subscribe("tasks");
 });
 
 Template.body.helpers({
@@ -33,19 +36,16 @@ Template.body.events({
     const target = e.target;
     const text = target.text.value;
 
-    //insert task to Collection
-    Tasks.insert({
-      text,
-      createdAt: new Date(),
-    });
+    //inser a task into the colleciton
+    Meteor.call('tasks.insert', text);
 
     //clear form
     target.text.value = '';
   },
 
-  'change .hide-completed input'(event, instance) {
-    console.log("change filter event - arguments: ", arguments);
-    console.trace("change filter event - arguments: ", arguments);
+  'change .hide-completed input'(event, NULL, instance) {
+    // a second NULL argument is passed because we have meteortoys installed
+    // this can be see with: console.trace("change filter event - arguments: ", arguments);
     instance.state.set('hideCompleted', event.target.checked);
 
   },
