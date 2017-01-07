@@ -42,7 +42,7 @@ Meteor.methods({
       //if the task is private, make sure only the owner can delete it
       throw new Meteor.Error("not-authorized");
     }
-
+    
 
     Tasks.remove(taskId);
   },
